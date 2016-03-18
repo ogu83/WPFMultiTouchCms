@@ -1,0 +1,8 @@
+﻿<Window x:Class="UITest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="UI TEST WINDOW" Width="640" Height="480" xmlns:my="clr-namespace:USM_TouchControls;assembly=USM_TouchControls">
+    <Viewbox Stretch="Fill">
+        <my:TouchVideoPlayer Name="touchVideoPlayer1" />
+    </Viewbox>
+</Window>

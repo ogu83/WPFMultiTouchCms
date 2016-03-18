@@ -1,0 +1,1196 @@
+﻿<Window x:Class="USM_Presenter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:usm="clr-namespace:USM_TouchControls;assembly=USM_TouchControls"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:USM_Presenter"
+        xmlns:vm="clr-namespace:USM_Presenter.ViewModels"
+        xmlns:helpers="clr-namespace:USM_Presenter.Helpers"          
+        mc:Ignorable="d" Icon="images/icon.png" d:DesignHeight="1080" d:DesignWidth="1920" WindowStyle="None" WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Stylus.IsPressAndHoldEnabled="{Binding NotReadOnly, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}"
+        x:Name="MyMain" Title="USM Presenter">
+    <Window.Resources>
+
+        <Storyboard x:Key="SB_ButtonsOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="grdButtons">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="grdButtons">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <PointAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="grdButtons">
+                <EasingPointKeyFrame KeyTime="0" Value="0.5,0.5"/>
+                <EasingPointKeyFrame KeyTime="0:0:0.5" Value="0.5,0">
+                    <EasingPointKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingPointKeyFrame.EasingFunction>
+                </EasingPointKeyFrame>
+            </PointAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <Storyboard x:Key="SB_ButtonsClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="grdButtons">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="grdButtons">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <PointAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="grdButtons">
+                <EasingPointKeyFrame KeyTime="0" Value="0.5,0"/>
+                <EasingPointKeyFrame KeyTime="0:0:0.5" Value="0.5,0.5">
+                    <EasingPointKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingPointKeyFrame.EasingFunction>
+                </EasingPointKeyFrame>
+            </PointAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <Storyboard x:Key="SB_ThumbOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="grdThumbnail">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseIn"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="grdThumbnail">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5" Value="{x:Static Visibility.Visible}"/>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <Storyboard x:Key="SB_ThumbClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="grdThumbnail">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="grdThumbnail">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5" Value="{x:Static Visibility.Collapsed}"/>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+
+        <Storyboard x:Key="SB_SlideShow">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="slide">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <Storyboard x:Key="SB_SlideHide">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="slide">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+    </Window.Resources>
+
+    <Viewbox Stretch="Fill">
+        <Grid x:Name="OuterGrid" Height="1080" Width="1920">
+            <Grid.Background>
+                <ImageBrush ImageSource="{Binding BackgroundImage}" Stretch="Fill" />
+            </Grid.Background>
+
+            <Grid x:Name="InnerGrid" Margin="10" Background="Transparent" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="15*" />
+                    <ColumnDefinition Width="1.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="12*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem StaysOpenOnClick="True">
+                            <MenuItem.Icon>
+                                <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                </Grid>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem x:Name="btnChangeBackgroundPicture" Header="Arka Plan Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" 
+                                  Click="btnChangePicture_Click">
+                            <MenuItem.Icon>
+                                <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}" >
+                            <MenuItem.Icon>
+                                <Image Height="64" Source="/USM_Presenter;component/images/BorderOuter.png" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <CheckBox Content="Panel ve Kenarlık" IsChecked="{Binding PagePanelEnabled, Mode=TwoWay}" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Sayfalar" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                            <MenuItem.Icon>
+                                <Image Height="64" Source="/USM_Presenter;component/images/Pages.png" />
+                            </MenuItem.Icon>
+                            <MenuItem Header="Sayfa Ekle" Click="btnAddPage_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/AddPage.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Alt Sayfa Ekle" Click="btnAddSubPage_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/pageswap.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Font Büyüklüğü" >
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/FontSize.png" />
+                                </MenuItem.Icon>
+                                <MenuItem Header="10" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="12" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="14" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="16" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="18" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="20" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="22" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="24" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="26" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="28" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="30" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="32" Click="btnChangePageFontSize_Click" />
+                                <MenuItem Header="36" Click="btnChangePageFontSize_Click" />
+                            </MenuItem>
+                            <MenuItem Header="Font Tipi">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/FontType.png" />
+                                </MenuItem.Icon>
+                                <ListBox Background="Transparent" BorderThickness="0" 
+                                         ItemsSource="{Binding}" ItemTemplate="{StaticResource fontFamilyData}" DataContext="{StaticResource familyCollection1}" 
+                                         SelectionChanged="btnPageFontChange_Click" />
+                            </MenuItem>
+                            <MenuItem Header="Font Rengi">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Colors.png" />
+                                </MenuItem.Icon>
+                                <ListBox Background="Transparent" BorderThickness="0" 
+                                         ItemsSource="{Binding Source={StaticResource colorPropertiesOdp}}" DisplayMemberPath="Name" SelectedValuePath="Name" 
+                                         SelectionChanged="btnPageFontColorChange_Click"/>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Hizalama">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/AlignCenter.png" />
+                                </MenuItem.Icon>
+                                <RadioButton Content="Sol-Üst" IsChecked="{Binding AlignPagesPanelLeftUp, Mode=TwoWay}" />
+                                <RadioButton Content="Orta-Üst" IsChecked="{Binding AlignPagesPanelMidUp, Mode=TwoWay}" />
+                                <RadioButton Content="Sağ-Üst" IsChecked="{Binding AlignPagesPanelRightUp, Mode=TwoWay}" />
+                                <Separator />
+                                <RadioButton Content="Sol-Orta" IsChecked="{Binding AlignPagesPanelLeftMid, Mode=TwoWay}" />
+                                <RadioButton Content="Orta-Orta" IsChecked="{Binding AlignPagesPanelMidMid, Mode=TwoWay}" />
+                                <RadioButton Content="Sağ-Orta" IsChecked="{Binding AlignPagesPanelRightMid, Mode=TwoWay}" />
+                                <Separator />
+                                <RadioButton Content="Sol-Alt" IsChecked="{Binding AlignPagesPanelLeftDown, Mode=TwoWay}" />
+                                <RadioButton Content="Orta-Alt" IsChecked="{Binding AlignPagesPanelMidDown, Mode=TwoWay}" />
+                                <RadioButton Content="Sağ-Alt" IsChecked="{Binding AlignPagesPanelRightDown, Mode=TwoWay}" />
+                            </MenuItem>
+                            <MenuItem Header="Oryantasyon">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/RotateTransform.png" />
+                                </MenuItem.Icon>
+                                <RadioButton Content="Yatay" IsChecked="{Binding PagesOrientationHorizontal, Mode=TwoWay}" />
+                                <RadioButton Content="Düşey" IsChecked="{Binding PagesOrientationVertical, Mode=TwoWay}" />
+                            </MenuItem>
+                        </MenuItem>
+                    </ContextMenu>
+                </Grid.ContextMenu>
+
+                <Grid x:Name="grdNavigation" Background="Transparent" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}"
+                  Grid.Row="{Binding NavGridRow}" Grid.Column="{Binding NavGridCol}" 
+                  Grid.ColumnSpan="{Binding NavGridColSpan}" Grid.RowSpan="{Binding NavGridRowSpan}"                   
+                  Style="{StaticResource NavigationGrid}">
+                    <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem StaysOpenOnClick="True">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                </MenuItem.Icon>
+                                <MenuItem.Header>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Buttonlar" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Buttons.png" />
+                                </MenuItem.Icon>
+                                <CheckBox Content="{Binding NavButton5_Content, Mode=OneWay}" IsChecked="{Binding NavButton5_Visibility, Mode=TwoWay}" />
+                                <CheckBox Content="{Binding NavButton2_Content, Mode=OneWay}" IsChecked="{Binding NavButton2_Visibility, Mode=TwoWay}" />
+                                <CheckBox Content="{Binding NavButton3_Content, Mode=OneWay}" IsChecked="{Binding NavButton3_Visibility, Mode=TwoWay}" />
+                                <CheckBox Content="{Binding NavButton4_Content, Mode=OneWay}" IsChecked="{Binding NavButton4_Visibility, Mode=TwoWay}" />
+                                <CheckBox Content="{Binding NavButton7_Content, Mode=OneWay}" IsChecked="{Binding NavButton7_Visibility, Mode=TwoWay}" />
+                                <CheckBox Content="Volume Slider" IsChecked="{Binding VolumeSliderVisibility, Mode=TwoWay}" />
+                                <CheckBox Content="Kaydırma" IsChecked="{Binding TranslateButtonVisible, Mode=TwoWay}" />
+                                <CheckBox Content="Döndürme" IsChecked="{Binding RotateButtonVisible, Mode=TwoWay}" />
+                                <CheckBox Content="Boyutlandırma" IsChecked="{Binding ScaleButtonVisible, Mode=TwoWay}" />
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Font Büyüklüğü" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/FontSize.png" />
+                                </MenuItem.Icon>
+                                <MenuItem Header="10" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="12" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="14" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="16" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="18" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="20" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="22" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="24" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="26" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="28" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="30" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="32" Click="btnChangeNavFontSize_Click" />
+                                <MenuItem Header="36" Click="btnChangeNavFontSize_Click" />
+                            </MenuItem>
+                            <MenuItem Header="Font Tipi" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/FontType.png" />
+                                </MenuItem.Icon>
+                                <ListBox Background="Transparent" BorderThickness="0" 
+                                         ItemsSource="{Binding}" ItemTemplate="{StaticResource fontFamilyData}" DataContext="{StaticResource familyCollection}" 
+                                         SelectionChanged="btnNavFontChange_Click" />
+                            </MenuItem>
+                            <MenuItem Header="Font Rengi" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Colors.png" />
+                                </MenuItem.Icon>
+                                <ListBox Background="Transparent" BorderThickness="0" 
+                                         ItemsSource="{Binding Source={StaticResource colorPropertiesOdp}}" DisplayMemberPath="Name" SelectedValuePath="Name" 
+                                         SelectionChanged="btnNavFontColorChange_Click"/>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Pozisyon" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Position.png" />
+                                </MenuItem.Icon>
+                                <RadioButton Content="Yukarı"   IsChecked="{Binding IsNavMenuPositionTop}" />
+                                <RadioButton Content="Sola"     IsChecked="{Binding IsNavMenuPositionLeft}" />
+                                <RadioButton Content="Sağa"     IsChecked="{Binding IsNavMenuPositionRight}" />
+                                <RadioButton Content="Aşağı"    IsChecked="{Binding IsNavMenuPositionBottom}"  />
+                            </MenuItem>
+                            <MenuItem Header="İçerik Pozisyon" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/AlignCenter.png" />
+                                </MenuItem.Icon>
+                                <RadioButton Content="Sola"     IsChecked="{Binding IsNavMenuContentLeft}" />
+                                <RadioButton Content="Ortala"   IsChecked="{Binding IsNavMenuContentCenter}" />
+                                <RadioButton Content="Sağa"     IsChecked="{Binding IsNavMenuContentRight}" />
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Dosya" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Files-icon.png" />
+                                </MenuItem.Icon>
+                                <MenuItem Header="Kaydet" Click="btnSave_Click">
+                                    <MenuItem.Icon>
+                                        <Image Height="64" Source="/USM_Presenter;component/images/SaveFile.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Salt Okunur Kaydet" Click="btnSaveReadOnly">
+                                    <MenuItem.Icon>
+                                        <Image Height="64" Source="/USM_Presenter;component/images/SaveReadOnly.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Aç" Click="btnOpen_Click">
+                                    <MenuItem.Icon>
+                                        <Image Height="64" Source="/USM_Presenter;component/images/OpenFile.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="Muzik" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Music-icon.png" />
+                                </MenuItem.Icon>
+                                <MenuItem Header="Ekle" Click="btnMusicAdd_Click">
+                                    <MenuItem.Icon>
+                                        <Image Height="64" Source="/USM_Presenter;component/images/Add.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Kaldır" Click="btnMusicRemove_Click">
+                                    <MenuItem.Icon>
+                                        <Image Height="64" Source="/USM_Presenter;component/images/Remove.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Hakkında" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnAbout_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/about.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Çıkış" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnExit_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/exit.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+
+                    <MediaElement x:Name="mediaMusic" MediaEnded="mediaMusic_MediaEnded" Source="{Binding Music, Mode=OneWay}" Volume="{Binding Volume, Mode=OneWay}" Visibility="Hidden" LoadedBehavior="Manual" UnloadedBehavior="Manual"/>
+
+                    <WrapPanel HorizontalAlignment="{Binding NavHAlignment}" VerticalAlignment="{Binding NavVAlignment}">
+
+                        <Button x:Name="btnHome" Style="{DynamicResource NavigationButton}" Content="{Binding NavButton1_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav1Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton1_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav1ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                        <Button x:Name="btnBack" Style="{DynamicResource NavigationButton}" Content="{Binding NavButton6_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav6Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton6_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav6ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                        <helpers:ExtendedToggleButton x:Name="btnTranslate" Visibility="{Binding Path=TranslateButtonVisible, Converter={StaticResource BooleanToVisibilityConverter1}}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}"
+                                                      IsChecked="{Binding IsTranslateEnabled, Mode=TwoWay}" >
+                            <helpers:ExtendedToggleButton.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="btnChangeTranslatePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </helpers:ExtendedToggleButton.ContextMenu>
+                            <helpers:ExtendedToggleButton.Background>
+                                <ImageBrush ImageSource="{Binding TranslateOFFImage, Mode=OneWay}" />
+                            </helpers:ExtendedToggleButton.Background>
+                            <helpers:ExtendedToggleButton.Foreground>
+                                <ImageBrush ImageSource="{Binding TranslateONImage, Mode=OneWay}" />
+                            </helpers:ExtendedToggleButton.Foreground>
+                        </helpers:ExtendedToggleButton>
+                        <helpers:ExtendedToggleButton x:Name="btnRotate" Visibility="{Binding Path=RotateButtonVisible, Converter={StaticResource BooleanToVisibilityConverter1}}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}"
+                                                      IsChecked="{Binding IsRotateEnabled, Mode=TwoWay}">
+                            <helpers:ExtendedToggleButton.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="btnChangeRotatePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </helpers:ExtendedToggleButton.ContextMenu>
+                            <helpers:ExtendedToggleButton.Background>
+                                <ImageBrush ImageSource="{Binding RotateOFFImage, Mode=OneWay}" />
+                            </helpers:ExtendedToggleButton.Background>
+                            <helpers:ExtendedToggleButton.Foreground>
+                                <ImageBrush ImageSource="{Binding RotateONImage, Mode=OneWay}" />
+                            </helpers:ExtendedToggleButton.Foreground>
+                        </helpers:ExtendedToggleButton>
+                        <helpers:ExtendedToggleButton x:Name="btnScale" Visibility="{Binding Path=ScaleButtonVisible, Converter={StaticResource BooleanToVisibilityConverter1}}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}"
+                                                      IsChecked="{Binding IsScaleEnabled, Mode=TwoWay}">
+                            <helpers:ExtendedToggleButton.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="btnChangeScalePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </helpers:ExtendedToggleButton.ContextMenu>
+                            <helpers:ExtendedToggleButton.Background>
+                                <ImageBrush ImageSource="{Binding ScaleOFFImage, Mode=OneWay}" />
+                            </helpers:ExtendedToggleButton.Background>
+                            <helpers:ExtendedToggleButton.Foreground>
+                                <ImageBrush ImageSource="{Binding ScaleONImage, Mode=OneWay}" />
+                            </helpers:ExtendedToggleButton.Foreground>
+                        </helpers:ExtendedToggleButton>
+
+                        <Button x:Name="btnSlideShow" Visibility="{Binding Path=NavButton5_Visibility, Converter={StaticResource BooleanToVisibilityConverter1}}" Style="{DynamicResource NavigationButton}" Content="{Binding NavButton5_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav5Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton5_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav5ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Slaytlar" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem Header="Slayt Ekle" Click="btnAddSlides_Click">
+                                            <MenuItem.Icon>
+                                                <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Tüm Slaytları Sil" Click="btnDeleteAllSlides_Click">
+                                            <MenuItem.Icon>
+                                                <Image Height="64" Source="/USM_Presenter;component/images/RemoveImage.png" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <MenuItem.Header>
+                                                <CheckBox Content="Tekrar" IsChecked="{Binding SlideShow.Repeat, Mode=TwoWay}" />
+                                            </MenuItem.Header>
+                                            <MenuItem.Icon>
+                                                <Image Height="64" Source="/USM_Presenter;component/images/Repeat.png" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem StaysOpenOnClick="True">
+                                            <MenuItem.Header>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="Süre" />
+                                                    <TextBox Grid.Row="1" Text="{Binding SlideShow.SlideTime, Mode=TwoWay}" />
+                                                </Grid>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                        <Button x:Name="btnPlay" Visibility="{Binding Path=NavButton2_Visibility, Converter={StaticResource BooleanToVisibilityConverter1}}" Style="{DynamicResource NavigationButton}" Content="{Binding NavButton2_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav2Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton2_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav2ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                        <Button x:Name="btnStop" Visibility="{Binding Path=NavButton3_Visibility, Converter={StaticResource BooleanToVisibilityConverter1}}" Style="{DynamicResource NavigationButton}" Content="{Binding NavButton3_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav3Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton3_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav3ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                        <Button x:Name="btnMute" Visibility="{Binding Path=NavButton4_Visibility, Converter={StaticResource BooleanToVisibilityConverter1}}" Style="{DynamicResource NavigationButton}" Content="{Binding NavButton4_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav4Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton3_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav4ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                        <Slider Visibility="{Binding Path=VolumeSliderVisibility, Converter={StaticResource BooleanToVisibilityConverter1}}" Value="{Binding Volume}" Maximum="1" Minimum="0" LargeChange="0.4" Width="{Binding SliderWidth, Mode=OneWay}" 
+                                Style="{StaticResource CustomSlider}" MinHeight="{Binding SliderButtonHeight, Mode=OneWay}" MinWidth="{Binding SliderButtonWidth, Mode=OneWay}">
+                            <Slider.Foreground>
+                                <ImageBrush ImageSource="{Binding SliderImage}" />
+                            </Slider.Foreground>
+                            <Slider.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Button Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Tag="{Binding SliderImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Boyutlandır" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Resize.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem>
+                                            <MenuItem.Icon>
+                                                <Image Height="64" Source="/USM_Presenter;component/images/Width.png" />
+                                            </MenuItem.Icon>
+                                            <MenuItem.Header>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="Toplam Genişlik"></TextBlock>
+                                                    <TextBox Text="{Binding SliderWidth, Mode=TwoWay}" Grid.Row="1" />
+                                                </Grid>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <MenuItem.Icon>
+                                                <Image Height="64" Source="/USM_Presenter;component/images/Width.png" />
+                                            </MenuItem.Icon>
+                                            <MenuItem.Header>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="Button Genişlik"></TextBlock>
+                                                    <TextBox Text="{Binding SliderButtonWidth, Mode=TwoWay}" Grid.Row="1" />
+                                                </Grid>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <MenuItem.Icon>
+                                                <Image Height="64" Source="/USM_Presenter;component/images/Height.png" />
+                                            </MenuItem.Icon>
+                                            <MenuItem.Header>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="Button Yükseklik"></TextBlock>
+                                                    <TextBox Text="{Binding SliderButtonHeight, Mode=TwoWay}" Grid.Row="1" />
+                                                </Grid>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Slider.ContextMenu>
+                        </Slider>
+
+                        <Button x:Name="btnExit" Style="{DynamicResource NavigationButton}" Visibility="{Binding Path=NavButton7_Visibility, Converter={StaticResource BooleanToVisibilityConverter1}}" Content="{Binding NavButton7_Content, Mode=OneWay}" FontSize="{Binding NavFontSize, Mode=OneWay}" FontFamily="{Binding NavFont, Mode=OneWay}" Foreground="{Binding NavForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}" Click="btnNav_Click">
+                            <Button.Background>
+                                <ImageBrush ImageSource="{Binding Nav7Image}" Stretch="Uniform" />
+                            </Button.Background>
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="İçeriği Değiştir" />
+                                                <TextBox Grid.Row="1" Text="{Binding NavButton7_Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem x:Name="btnNav7ChangePicture" Header="Resmi Değiştir" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnChangePicture_Click">
+                                        <MenuItem.Icon>
+                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+
+                    </WrapPanel>
+                </Grid>
+
+                <Grid x:Name="grdButtons" Grid.Row="1" Grid.Column="1" Margin="10" RenderTransformOrigin="0.5,0.5">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+                    <ListView ItemsSource="{Binding Pages}" Background="{Binding PagePanelBackground, Mode=OneWay}" BorderThickness="{Binding PagePanelBorderThickness, Mode=OneWay}"
+                              FontSize="{Binding PageFontSize, Mode=OneWay}" FontFamily="{Binding PageFont, Mode=OneWay}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" MaxWidth="1500" MaxHeight="900" Background="Transparent"
+                                           VerticalAlignment="{Binding PagesPanelVerticalAlignment, Mode=OneWay}" 
+                                           HorizontalAlignment="{Binding PagesPanelHorizontalAlignment, Mode=OneWay}" 
+                                           Orientation="{Binding PagesOrientation, Mode=OneWay}" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding ButtonText}" Style="{Binding ButtonStyle}" Foreground="{Binding Parent.PageForeColorBrush, Mode=OneWay}" ContextMenuService.IsEnabled="{Binding Parent.NotReadOnly, Mode=OneWay}"
+                                        HorizontalContentAlignment="{Binding HorizontalContentAlignment, Mode=OneWay}" VerticalContentAlignment="{Binding VerticalContentAlignment, Mode=OneWay}"
+                                        Width="{Binding ButtonWidth, Mode=OneWay}" Height="{Binding ButtonHeight, Mode=OneWay}"
+                                        Click="btnPage_Click" Tag="{Binding PrimaryID, Mode=OneWay}">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="{Binding ButtonImage}" />
+                                    </Button.Background>
+                                    <Button.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem StaysOpenOnClick="True">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                                </MenuItem.Icon>
+                                                <MenuItem.Header>
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition />
+                                                        </Grid.RowDefinitions>
+                                                        <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Parent.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        <CheckBox Content="Düzenleme Modu" IsChecked="{Binding Parent.EditMode}" IsEnabled="{Binding Parent.EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                                    </Grid>
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                            <Separator />
+                                            <MenuItem IsEnabled="{Binding Parent.EditMode, Mode=OneWay}">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/edit.png" />
+                                                </MenuItem.Icon>
+                                                <MenuItem.Header>
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition />
+                                                        </Grid.RowDefinitions>
+                                                        <TextBlock Text="İçeriği Değiştir" />
+                                                        <TextBox Grid.Row="1" Text="{Binding ButtonText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </Grid>
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                            <MenuItem Header="İçerik Hizala" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/AlignCenter.png" />
+                                                </MenuItem.Icon>
+                                                <RadioButton Content="Sol-Üst" IsChecked="{Binding AlignContentLeftUp, Mode=TwoWay}" />
+                                                <RadioButton Content="Orta-Üst" IsChecked="{Binding AlignContentMidUp, Mode=TwoWay}" />
+                                                <RadioButton Content="Sağ-Üst" IsChecked="{Binding AlignContentRightUp, Mode=TwoWay}" />
+                                                <Separator />
+                                                <RadioButton Content="Sol-Orta" IsChecked="{Binding AlignContentLeftMid, Mode=TwoWay}" />
+                                                <RadioButton Content="Orta-Orta" IsChecked="{Binding AlignContentMidMid, Mode=TwoWay}" />
+                                                <RadioButton Content="Sağ-Orta" IsChecked="{Binding AlignContentRightMid, Mode=TwoWay}" />
+                                                <Separator />
+                                                <RadioButton Content="Sol-Alt" IsChecked="{Binding AlignContentLeftDown, Mode=TwoWay}" />
+                                                <RadioButton Content="Orta-Alt" IsChecked="{Binding AlignContentMidDown, Mode=TwoWay}" />
+                                                <RadioButton Content="Sağ-Alt" IsChecked="{Binding AlignContentRightDown, Mode=TwoWay}" />
+                                            </MenuItem>
+                                            <Separator />
+                                            <MenuItem>
+                                                <MenuItem.Header>
+                                                    <CheckBox Content="Basit Sitil" IsChecked="{Binding UseSimpleButtonStyle, Mode=TwoWay}" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}" />
+                                                </MenuItem.Header>
+                                                <MenuItem.Icon>
+                                                    <Rectangle Fill="Red" Height="56" Margin="4" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Sayfanın Arka Planı" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}" Tag="{Binding PageBackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Click="btnChangePicture_Click">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Sayfanın Arka Planını Kaldır" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}" Tag="{Binding PageBackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Click="btnRemovePanelBackgroundImage_Click">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/RemoveImage.png"  />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Resmi Değiştir" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}" Tag="{Binding ButtonImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Click="btnChangePicture_Click">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Boyutlandır" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/Resize.png" />
+                                                </MenuItem.Icon>
+                                                <MenuItem>
+                                                    <MenuItem.Icon>
+                                                        <Image Height="64" Source="/USM_Presenter;component/images/Width.png" />
+                                                    </MenuItem.Icon>
+                                                    <MenuItem.Header>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition />
+                                                                <RowDefinition />
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Text="Genişlik"></TextBlock>
+                                                            <TextBox Text="{Binding ButtonWidth, Mode=TwoWay}" Grid.Row="1" />
+                                                        </Grid>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem>
+                                                    <MenuItem.Icon>
+                                                        <Image Height="64" Source="/USM_Presenter;component/images/Height.png" />
+                                                    </MenuItem.Icon>
+                                                    <MenuItem.Header>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition />
+                                                                <RowDefinition />
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Text="Yükseklik"></TextBlock>
+                                                            <TextBox Text="{Binding ButtonHeight, Mode=TwoWay}" Grid.Row="1" />
+                                                        </Grid>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                            </MenuItem>
+                                            <Separator />
+                                            <MenuItem Header="Sayfayı Sil" IsEnabled="{Binding Parent.EditMode, Mode=OneWay}" Tag="{Binding PrimaryID, Mode=OneWay}" Click="btnDeletePage_Click">
+                                                <MenuItem.Icon>
+                                                    <Image Height="64" Source="/USM_Presenter;component/images/removePage.png" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+                <Grid x:Name="grdThumbnail" RenderTransformOrigin="0.5,0.5" Opacity="0" ContextMenuService.IsEnabled="{Binding NotReadOnly, Mode=OneWay}"
+                      Grid.Column="{Binding ThumbGridCol}" Grid.Row="{Binding ThumbGridRow}" Visibility="Collapsed">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+                    <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem StaysOpenOnClick="True">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                </MenuItem.Icon>
+                                <MenuItem.Header>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <CheckBox Content="Düzenleme Modu" IsChecked="{Binding EditMode}" IsEnabled="{Binding EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem Header="Pozisyon" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/Position.png" />
+                                </MenuItem.Icon>
+                                <RadioButton Content="Yukarı"   IsChecked="{Binding IsThumbPositionTop}" />
+                                <RadioButton Content="Sola"     IsChecked="{Binding IsThumbPositionLeft}" />
+                                <RadioButton Content="Sağa"     IsChecked="{Binding IsThumbPositionRight}" />
+                                <RadioButton Content="Aşağı"    IsChecked="{Binding IsThumbPositionBottom}"  />
+                            </MenuItem>
+                            <MenuItem Header="Resim Ekle" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnAddImage_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Video Ekle" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnAddVideo_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/AddVideo.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Tümünü Sil" IsEnabled="{Binding EditMode, Mode=OneWay}" Click="btnDeleteAllElements_Click">
+                                <MenuItem.Icon>
+                                    <Image Height="64" Source="/USM_Presenter;component/images/removePage.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+                    <Border BorderThickness="5" Background="#40000000" CornerRadius="20" RenderTransformOrigin="0.5,0.5">
+                        <Grid Margin="8">
+                            <ListView ItemsSource="{Binding SelectedPage.Elements}" Background="Transparent" BorderThickness="0">
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True" Orientation="{Binding ThumbOrientation}" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Click="btnElement_Click" Style="{DynamicResource ImageButton}" Tag="{Binding PrimaryID, Mode=OneWay}" IsEnabled="{Binding IsNotOnCanvas}" ContextMenuService.IsEnabled="{Binding Parent.Parent.NotReadOnly, Mode=OneWay}">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="{Binding Path}" Stretch="Fill" />
+                                            </Button.Background>
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem StaysOpenOnClick="True">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/Password.png" />
+                                                        </MenuItem.Icon>
+                                                        <MenuItem.Header>
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition />
+                                                                    <RowDefinition />
+                                                                </Grid.RowDefinitions>
+                                                                <PasswordBox helpers:PasswordBoxAssistant.BindPassword="True" helpers:PasswordBoxAssistant.BoundPassword="{Binding Parent.Parent.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <CheckBox Content="Düzenleme Modu" IsChecked="{Binding Parent.Parent.EditMode}" IsEnabled="{Binding Parent.Parent.EditModeButtonEnabled, Mode=OneWay}" Grid.Row="1" />
+                                                            </Grid>
+                                                        </MenuItem.Header>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Pozisyon" IsEnabled="{Binding Parent.Parent.EditMode, Mode=OneWay}">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/Position.png" />
+                                                        </MenuItem.Icon>
+                                                        <RadioButton Content="Yukarı"   IsChecked="{Binding Parent.Parent.IsThumbPositionTop}" />
+                                                        <RadioButton Content="Sola"     IsChecked="{Binding Parent.Parent.IsThumbPositionLeft}" />
+                                                        <RadioButton Content="Sağa"     IsChecked="{Binding Parent.Parent.IsThumbPositionRight}" />
+                                                        <RadioButton Content="Aşağı"    IsChecked="{Binding Parent.Parent.IsThumbPositionBottom}"  />
+                                                    </MenuItem>
+                                                    <MenuItem Header="Resim Ekle" IsEnabled="{Binding Parent.Parent.EditMode, Mode=OneWay}" Click="btnAddImage_Click">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/AddImage.png" />
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Video Ekle" IsEnabled="{Binding Parent.Parent.EditMode, Mode=OneWay}" Click="btnAddVideo_Click">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/AddVideo.png" />
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Sil" IsEnabled="{Binding Parent.Parent.EditMode, Mode=OneWay}" Tag="{Binding PrimaryID, Mode=OneWay}" Click="btnDeleteElement_Click">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/RemoveImage.png" />
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
+                                                    <MenuItem IsEnabled="{Binding Parent.Parent.EditMode, Mode=OneWay}" Visibility="{Binding Path=IsVideo, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/StartMovie.png" />
+                                                        </MenuItem.Icon>
+                                                        <MenuItem.Header>
+                                                            <CheckBox Content="Otomatik Başlat" IsChecked="{Binding AutoStart, Mode=TwoWay}" />
+                                                        </MenuItem.Header>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Tümünü Sil" IsEnabled="{Binding Parent.Parent.EditMode, Mode=OneWay}" Click="btnDeleteAllElements_Click">
+                                                        <MenuItem.Icon>
+                                                            <Image Height="64" Source="/USM_Presenter;component/images/RemoveImage.png" />
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <usm:TouchRulerCanvas x:Name="TouchCanvas" IsRemoveOnThrowOut="True" thrownOut="TouchCanvas_OnThrownOut" Grid.RowSpan="3" Grid.ColumnSpan="3" 
+                                      IsTranslateDisabled="{Binding ElementName=btnTranslate, Path=IsNotChecked, Mode=OneWay}" 
+                                      IsRotateDisabled="{Binding ElementName=btnRotate, Path=IsNotChecked, Mode=OneWay}" 
+                                      IsScaleDisabled="{Binding ElementName=btnScale, Path=IsNotChecked, Mode=OneWay}" />
+
+                <Grid x:Name="grdSlideShow" Grid.RowSpan="3" Grid.ColumnSpan="3" 
+                      TouchDown="grdSlideShow_TouchDown" MouseDown="grdSlideShow_MouseDown"
+                      DataContext="{Binding SlideShow}" Visibility="{Binding Enabled, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <Grid.Background>
+                        <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5">
+                            <GradientStop Color="#FF000035" />
+                            <GradientStop Color="Black" Offset="1.5" />
+                        </RadialGradientBrush>
+                    </Grid.Background>
+                    <Image x:Name="slide" Source="{Binding CurrentImage, Mode=OneWay}" Margin="10" />
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
+    </Viewbox>
+</Window>
